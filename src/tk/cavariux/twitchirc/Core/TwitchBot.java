@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import tk.cavariux.twitchirc.Chat.Channel;
 import tk.cavariux.twitchirc.Chat.User;
@@ -19,45 +18,50 @@ public class TwitchBot {
 	private BufferedWriter writer;
 	private BufferedReader reader;
 	private ArrayList<String> channels = new ArrayList<String>();
-	private double version = 0.01;
+	private String version = "v1.0-alpha";
 	
 	public TwitchBot(){}
 	
-	public void connect() throws IOException
+	public void connect()
 	{
-		if (user == null || user == "")
+		try{
+			if (user == null || user == "")
+			{
+				System.err.println("Please select a valid Username");
+				System.exit(1);
+				return;
+			}
+			if (oauth_key == null || oauth_key == "")
+			{
+				System.err.println("Please select a valid Oauth_Key");
+				System.exit(2);
+				return;
+			}
+			
+			
+			@SuppressWarnings("resource")
+			Socket socket = new Socket("irc.twitch.tv", 6667);
+			this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			
+			this.writer.write("PASS " + oauth_key + "\r\n");
+			this.writer.write("NICK " + user + "\r\n");
+			this.writer.write("USER " + this.getVersion() + " \r\n");
+			this.writer.flush();
+			
+			String line = "";
+			while ((line = this.reader.readLine()) != null)
+			{
+				 if (line.indexOf("004") >= 0) {
+		                System.out.println("Connected >> " + user + " ~ irc.twitch.tv");
+		                break;
+		            }else {
+		                System.out.println(line);
+		            }	
+			}
+		} catch (IOException e)
 		{
-			System.err.println("Please select a valid Username");
-			System.exit(1);
-			return;
-		}
-		if (oauth_key == null || oauth_key == "")
-		{
-			System.err.println("Please select a valid Oauth_Key");
-			System.exit(2);
-			return;
-		}
-		
-		
-		@SuppressWarnings("resource")
-		Socket socket = new Socket("irc.twitch.tv", 6667);
-		this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		
-		this.writer.write("PASS " + oauth_key + "\r\n");
-		this.writer.write("NICK " + user + "\r\n");
-		this.writer.write("USER " + "TwitchIRC v0.01 \r\n");
-		this.writer.flush();
-		
-		String line = "";
-		while ((line = this.reader.readLine()) != null)
-		{
-			 if (line.indexOf("004") >= 0) {
-	                System.out.println("Connected >> " + user + " ~ irc.twitch.tv");
-	                break;
-	            }else {
-	                System.out.println(line);
-	            }	
+			e.printStackTrace();
 		}
 	}
 	
@@ -151,8 +155,6 @@ public class TwitchBot {
 			        this.writer.flush();
 			    } else if (line.contains("PRIVMSG"))
 			    {
-			        /* Send The Messages to The onMessage Method */
-			    	//System.out.println(line);
 			        String str[];
 			        str = line.split("!");
 			        final User msg_user = new User(str[0].substring(1, str[0].length()));
@@ -178,6 +180,6 @@ public class TwitchBot {
 	
 	public final String getVersion()
 	{
-		return "TwitchIRC v"+version;
+		return "TwitchIRC "+version;
 	}
 }
