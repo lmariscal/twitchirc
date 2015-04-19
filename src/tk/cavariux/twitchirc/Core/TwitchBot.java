@@ -11,8 +11,13 @@ import java.util.ArrayList;
 import tk.cavariux.twitchirc.Chat.Channel;
 import tk.cavariux.twitchirc.Chat.User;
 
+/**
+ * The main object to start making your bot
+ * @author CavariuX
+ * @version 1.2-alpha
+ */
 public class TwitchBot {
-
+	
 	private String user;
 	private String oauth_key;
 	private BufferedWriter writer;
@@ -22,6 +27,9 @@ public class TwitchBot {
 	
 	public TwitchBot(){}
 	
+	/**
+	 * The connect method alouds you to connect to the IRC servers on twitch
+	 */
 	public void connect()
 	{
 		try{
@@ -65,21 +73,38 @@ public class TwitchBot {
 		}
 	}
 	
+	/**
+	 * Set the username that the connect method will use
+	 * @param username Needs your <a href="http://www.twitch.tv">Twitch</a> Username to connect
+	 */
 	 public final void setUsername(String username)
 	{
 		this.user = username;
 	}
 	
+	 /**
+	  * Set the "password" that the <a href="connect">connect</a> method will use.
+	  * @param oauth_key To get this key go to the <a href="http://twitchapps.com/tmi/">TwitchApps</a> and get it on the TMI section
+	  */
 	public final void setOauth_Key (String oauth_key)
 	{
 		this.oauth_key = oauth_key;
 	}
-	
+	/**
+	 * This method is called when a message is sent on the Twitch Chat.
+	 * @param user The user is sent, if you put it on a String it will give you the user's nick
+	 * @param channel The channel where the message was sent
+	 * @param message The message
+	 */
 	protected void onMessage(User user, Channel channel, String message)
 	{
 		
 	}
 	
+	/**
+	 * This method is used if you want to send a command to the IRC server, not commontly used
+	 * @param message the command you will sent
+	 */
 	public void sendRawMessage(String message)
 	{
 		try {
@@ -91,6 +116,10 @@ public class TwitchBot {
 		System.out.println(message);
 	}
 	
+	/**
+	 * An int variation of the sendRawMessage(String)
+	 * @param message the command you will sent
+	 */
 	public void sendRawMessage(int message)
 	{
 		try {
@@ -102,17 +131,27 @@ public class TwitchBot {
 		System.out.println(message);
 	}
 	
-	public void sendMessage(String message, Channel cav)
+	/**
+	 * Send a message to a channel on Twitch (Don't need to be on that channel)
+	 * @param message The message that will be sent
+	 * @param channel The channel where the message will be sent
+	 */
+	public void sendMessage(String message, Channel channel)
 	{
 		try {
-			this.writer.write("PRIVMSG " + cav + " :" + message + "\r\n");
+			this.writer.write("PRIVMSG " + channel + " :" + message + "\r\n");
 			this.writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("> MSG " + cav + " : " + message);
+		System.out.println("> MSG " + channel + " : " + message);
 	}
 	
+	/**
+	 * A sendMessage variation with an int
+	 * @param message The message that will be sent
+	 * @param channel channel The channel where the message will be sent
+	 */
 	public void sendMessage(int message, Channel channel)
 	{
 		try {
@@ -124,6 +163,11 @@ public class TwitchBot {
 		System.out.println("> MSG " + channel + " : " + message);
 	}
 	
+	/**
+	 * The method to join an IRC channel on Twitch
+	 * @param channel The channel name
+	 * @return You can get the channel you just created
+	 */
 	public final Channel joinChannel (String channel)
 	{
 		sendRawMessage("JOIN " + channel + "\r\n");
@@ -131,6 +175,10 @@ public class TwitchBot {
 		return new Channel(channel, this);
 	}
 	
+	/**
+	 * Leaves the channel you want
+	 * @param channel The channel you want to leave
+	 */
 	public final void partChannel (String channel)
 	{
 		this.sendRawMessage("PART " + channel);
@@ -138,11 +186,18 @@ public class TwitchBot {
 		System.out.println("> PART " + channel);
 	}
 	
+	/**
+	 * No need to use this dev things
+	 * @return a BufferedWrtier
+	 */
 	public final BufferedWriter getWriter ()
 	{
 		return this.writer;
 	}
 	
+	/**
+	 * Starts the full mechanism of the bot, this is the last method to be called
+	 */
 	public final void start()
 	{
 		String line = "";
@@ -178,6 +233,10 @@ public class TwitchBot {
 		}
 	}
 	
+	/**
+	 * Get the version of the TwitchIRC lib
+	 * @return the version of the TwitchIRC lib
+	 */
 	public final String getVersion()
 	{
 		return "TwitchIRC "+version;
