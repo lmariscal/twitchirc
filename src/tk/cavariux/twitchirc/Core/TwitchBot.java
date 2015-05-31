@@ -13,8 +13,8 @@ import tk.cavariux.twitchirc.Chat.User;
 
 /**
  * The main object to start making your bot
- * @author CavariuX
- * @version 1.2-alpha
+ * @author Leonardo Mariscal
+ * @version 1.3-alpha
  */
 public class TwitchBot {
 	
@@ -23,7 +23,7 @@ public class TwitchBot {
 	private BufferedWriter writer;
 	private BufferedReader reader;
 	private ArrayList<String> channels = new ArrayList<String>();
-	private String version = "v1.0-alpha";
+	private String version = "v1.3-alpha";
 	
 	public TwitchBot(){}
 	
@@ -90,6 +90,7 @@ public class TwitchBot {
 	{
 		this.oauth_key = oauth_key;
 	}
+	
 	/**
 	 * This method is called when a message is sent on the Twitch Chat.
 	 * @param user The user is sent, if you put it on a String it will give you the user's nick
@@ -97,6 +98,17 @@ public class TwitchBot {
 	 * @param message The message
 	 */
 	protected void onMessage(User user, Channel channel, String message)
+	{
+		
+	}
+	
+	/**
+	 * This method is called when a command is sent on the Twitch Chat.
+	 * @param user The user is sent, if you put it on a String it will give you the user's nick
+	 * @param channel The channel where the command was sent
+	 * @param message The command
+	 */
+	protected void onCommand(User user, Channel channel, String command)
 	{
 		
 	}
@@ -172,7 +184,7 @@ public class TwitchBot {
 	{
 		sendRawMessage("JOIN " + channel + "\r\n");
 		System.out.println("> JOIN " + channel);
-		return new Channel(channel, this);
+		return Channel.getChannel(channel, this);
 	}
 	
 	/**
@@ -212,12 +224,15 @@ public class TwitchBot {
 			    {
 			        String str[];
 			        str = line.split("!");
-			        final User msg_user = new User(str[0].substring(1, str[0].length()));
+			        final User msg_user = User.getUser(str[0].substring(1, str[0].length()));
 			        str = line.split(" ");
 			        Channel msg_channel;
-			        msg_channel = new Channel(str[2], this);
+			        msg_channel = Channel.getChannel(str[2], this);
 			        String msg_msg = line.substring((str[0].length() + str[1].length() + str[2].length() + 4), line.length());
 			        System.out.println("> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
+			        if (msg_msg.startsWith("!"))
+			        	onCommand(msg_user, msg_channel, msg_msg.substring(1));
+			        
 			        onMessage(msg_user, msg_channel, msg_msg);
 			    } else if (line.toLowerCase().contains("disconnected"))
 			    {

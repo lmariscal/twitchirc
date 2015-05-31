@@ -1,25 +1,18 @@
 package tk.cavariux.twitchirc.Chat;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
+import java.util.HashMap;
 
-import tk.cavariux.twitchirc.Json.JsonArray;
-import tk.cavariux.twitchirc.Json.JsonObject;
-import tk.cavariux.twitchirc.Json.JsonValue;
+import tk.cavariux.twitchirc.Core.TwitchBot;
 
 /**
  * The user object
  * @author Leonardo Mariscal
- * @version 1.2-alpha
+ * @version 1.3-alpha
  */
 public class User
 {
-	private String urln = "http://tmi.twitch.tv/group/user/$channel$/chatters";
 	private String user;
+	private static HashMap<String, User> users = new HashMap<String, User>();
 	
 	/**
 	 * The constructor for a user.
@@ -28,6 +21,15 @@ public class User
 	public User(String user)
 	{
 		this.user = user;
+		users.put(user, this);
+	}
+	
+	public static final User getUser(String ign)
+	{
+		if (users.containsKey(ign))
+			return users.get(ign);
+		else
+			return new User(ign);
 	}
 	
 	/**
@@ -45,34 +47,44 @@ public class User
 	 * @param channel The channel to check
 	 * @return A boolean if its op returns true
 	 */
-	public final boolean isOp(Channel channel)
+	public final boolean isMod(Channel channel)
 	{
-		URL url;
-		try {
-			url = new URL(urln.replace("$channel$", channel.toString().substring(1)));
-			System.out.println(url);
-			URLConnection conn = url.openConnection();
-	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
-	        String inputLine = "";
-	        String str = "";
-	        while ((str = br.readLine()) != null)
-	        {
-	        	inputLine = inputLine + str;
-	        }
-	        br.close();
-	        JsonObject jsonObj = JsonObject.readFrom(inputLine);
-	        JsonArray array = jsonObj.get("chatters").asObject().get("moderators").asArray();
-	        ArrayList<String> mods = new ArrayList<String>();
-	        for (JsonValue value : array)
-	        {
-	        	mods.add(value.toString().substring(1, value.toString().length() - 1));
-	        }
-	        if (mods.contains(this.toString()))
-	        	return true;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return false;
+		return channel.isMod(this);
+	}
+	
+	/**
+	 * Ban a player from a channel (Requires Mod)
+	 * @param channel The channel
+	 */
+	public final void ban(Channel channel)
+	{
+		channel.ban(this);
+	}	
+	
+	/**
+	 * UnBan a player from a channel (Requires Mod)
+	 * @param channel The channel
+	 */
+	public final void unBan(Channel channel)
+	{
+		channel.unBan(this);
+	}
+	
+	/**
+	 * Timeout a player from a channel (Requires Mod)
+	 * @param channel The channel
+	 */
+	public final void timeout(Channel channel, int time)
+	{
+		channel.timeOut(this, time);
+	}
+	
+	/**
+	 * Timeout a player from a channel (Requires Streamer/Editor)
+	 * @param channel The channel
+	 */
+	public final void hostthisUser(Channel channel, TwitchBot bot)
+	{
+		channel.host(Channel.getChannel(user, bot));;
 	}
 }

@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import tk.cavariux.twitchirc.Core.TwitchBot;
 import tk.cavariux.twitchirc.Json.JsonArray;
@@ -14,13 +17,14 @@ import tk.cavariux.twitchirc.Json.JsonValue;
 /**
  * The channel object
  * @author Leonardo Mariscal
- * @version 1.2-alpha
+ * @version 1.3-alpha
  */
 public class Channel {
 	
 	private String urln = "http://tmi.twitch.tv/group/user/$channel$/chatters";
 	private String channel;
 	private TwitchBot bot;
+	private static HashMap<String, Channel> channels = new HashMap<String, Channel>();
 	
 	/**
 	 * The constructor of the channel object
@@ -31,6 +35,21 @@ public class Channel {
 	{
 		this.bot = bot;
 		this.channel = channel;
+		channels.put(channel, this);
+	}
+	
+	/**
+	 * Get a channel from an existing variable
+	 * @param channel The channel name
+	 * @param bot The bot tha use it
+	 * @return The channel
+	 */
+	public static final Channel getChannel(String channel, TwitchBot bot)
+	{
+		if (channels.containsKey(channel))
+			return channels.get(channel);
+		else
+			return new Channel(channel, bot);
 	}
 	
 	/**
@@ -157,12 +176,11 @@ public class Channel {
 	 * Get the currently viewers (This method is on beta so it may not be optimized)
 	 * @return A String[] with all the current viewers
 	 */
-	public final String[] getViewers()
+	public final List<User> getViewers()
 	{
 		URL url;
 		try {
 			url = new URL(urln.replace("$channel$", channel.toString().substring(1)));
-			System.out.println(url);
 			URLConnection conn = url.openConnection();
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        String inputLine = "";
@@ -175,22 +193,55 @@ public class Channel {
 	        JsonObject jsonObj = JsonObject.readFrom(inputLine);
 	        JsonArray array = jsonObj.get("chatters").asObject().get("viewers").asArray();
 	        JsonArray array2 = jsonObj.get("chatters").asObject().get("moderators").asArray();
-	        String[] viewers = new String[array.size() + array2.size()];
-	        int i = 0;
+	        List<User> viewers = new ArrayList<User>();
 	        for (JsonValue value : array)
-	        {
-	        	viewers[i] = value.toString().substring(1, value.toString().length() - 1);
-	        	i++;
-	        }
+	        	viewers.add(User.getUser(value.toString().substring(1, value.toString().length() - 1)));
 	        for (JsonValue value : array2)
-	        {
-	        	viewers[i] = value.toString().substring(1, value.toString().length() - 1);
-	        	i++;
-	        }
+	        	viewers.add(User.getUser(value.toString().substring(1, value.toString().length() - 1)));
 	        return viewers;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * Get the currently viewers (This method is on beta so it may not be optimized)
+	 * @return A String[] with all the current viewers
+	 */
+	public final List<User> getMods()
+	{
+		URL url;
+		try {
+			url = new URL(urln.replace("$channel$", channel.toString().substring(1)));
+			URLConnection conn = url.openConnection();
+	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
+	        String inputLine = "";
+	        String str = "";
+	        while ((str = br.readLine()) != null)
+	        {
+	        	inputLine = inputLine + str;
+	        }
+	        br.close();
+	        JsonObject jsonObj = JsonObject.readFrom(inputLine);
+	        JsonArray array2 = jsonObj.get("chatters").asObject().get("moderators").asArray();
+	        List<User> mods = new ArrayList<User>();
+	        for (JsonValue value : array2)
+	        	mods.add(User.getUser(value.toString().substring(1, value.toString().length() - 1)));
+	        return mods;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Check if the user is a mod
+	 * @param user The user
+	 * @return true : false
+	 */
+	public final boolean isMod(User user)
+	{
+		return this.getMods().contains(user);
 	}
 }
