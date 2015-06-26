@@ -13,3 +13,7 @@ If You want to learn about how to use the Librarie visit the Wiki!
 ***
 
 If you think you can make any uptimization/things make a fork, in that fork make all modifications, then in this page go to pull requests and make a request :D. Thnxs.
+
+***
+
+Also, if you liked the Library please give it a star :)
