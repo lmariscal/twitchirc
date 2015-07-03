@@ -5,8 +5,8 @@ All rights reserved © 2015 Twitch Interactive, Inc.
 ***
 
 IMPORTANT
-If you are having trouble with Join/Part and some commands at IRC please retry to do it cause Twitch are making some changes
 
+If you are having trouble with Join/Part commands, this are Twitch problems. I have being testing and they work fine but there are some reports.
 ***
 
 If You want to learn about how to use the Librarie visit the Wiki!                      
