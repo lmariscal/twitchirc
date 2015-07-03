@@ -2,6 +2,13 @@
 Library Made by CavariuX.      
 All rights reserved © 2015 Twitch Interactive, Inc.
 
+***
+
+IMPORTANT
+If you are having trouble with Join/Part and some commands at IRC please retry to do it cause Twitch are making some changes
+
+***
+
 If You want to learn about how to use the Librarie visit the Wiki!                      
 
 [![Download TwitchIRC](https://img.shields.io/badge/TwitchIRC-v1.0-green.svg?style=plastic)](https://github.com/CavariuX/TwitchIRC/releases/tag/v1.0-Beta)
