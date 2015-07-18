@@ -6,7 +6,7 @@ All rights reserved © 2015 Twitch Interactive, Inc.
 
 IMPORTANT
 
-If you are having trouble with Join/Part commands, this are Twitch problems. I have being testing and they work fine but there are some reports.
+I ran out of Ideas :(, so please suggest me some at the "Issues" label and I will check them
 ***
 
 If You want to learn about how to use the Librarie visit the Wiki!                      
