@@ -49,7 +49,6 @@ public class Channel {
 	{
 		if (!channel.startsWith("#"))
 			channel = "#" + channel;
-		System.out.println("getting " + channel);
 		if (channels.containsKey(channel))
 			return channels.get(channel);
 		else
@@ -409,7 +408,6 @@ public class Channel {
 	 */
 	public final int getTotalViews()
 	{
-		System.out.println("asd");
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();

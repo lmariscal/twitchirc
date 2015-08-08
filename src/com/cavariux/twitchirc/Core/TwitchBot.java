@@ -73,6 +73,11 @@ public class TwitchBot {
 		}
 	}
 	
+	protected void onSub(User user, Channel channel, String message)
+	{
+		
+	}
+	
 	/**
 	 * Set the username that the connect method will use
 	 * @param username Needs your <a href="http://www.twitch.tv">Twitch</a> Username to connect
@@ -113,26 +118,26 @@ public class TwitchBot {
 		
 	}
 	
-	/**
-	 * This method is used if you want to send a command to the IRC server, not commontly used
-	 * @param message the command you will sent
-	 */
-	public void sendRawMessage(String message)
-	{
-		try {
-			this.writer.write(message + " \r\n");
-			this.writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println(message);
-	}
+//	/**
+//	 * This method is used if you want to send a command to the IRC server, not commontly used
+//	 * @param message the command you will sent
+//	 */
+//	public void sendRawMessage(String message)
+//	{
+//		try {
+//			this.writer.write(message + " \r\n");
+//			this.writer.flush();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(message);
+//	}
 	
 	/**
 	 * An int variation of the sendRawMessage(String)
 	 * @param message the command you will sent
 	 */
-	public void sendRawMessage(int message)
+	public void sendRawMessage(Object message)
 	{
 		try {
 			this.writer.write(message + " \r\n");
@@ -159,37 +164,37 @@ public class TwitchBot {
 		System.out.println("> MSG " + channel + " : " + message.toString());
 	}
 	
-	/**
-	 * Send a message to a channel on Twitch (Don't need to be on that channel)
-	 * @param message The message that will be sent
-	 * @param channel The channel where the message will be sent
-	 */
-	public void sendMessage(String message, Channel channel)
-	{
-		try {
-			this.writer.write("PRIVMSG " + channel + " :" + message + "\r\n");
-			this.writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("> MSG " + channel + " : " + message);
-	}
-	
-	/**
-	 * A sendMessage variation with an int
-	 * @param message The message that will be sent
-	 * @param channel channel The channel where the message will be sent
-	 */
-	public void sendMessage(int message, Channel channel)
-	{
-		try {
-			this.writer.write("PRIVMSG " + channel + " :" + message + "\r\n");
-			this.writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("> MSG " + channel + " : " + message);
-	}
+//	/**
+//	 * Send a message to a channel on Twitch (Don't need to be on that channel)
+//	 * @param message The message that will be sent
+//	 * @param channel The channel where the message will be sent
+//	 */
+//	public void sendMessage(String message, Channel channel)
+//	{
+//		try {
+//			this.writer.write("PRIVMSG " + channel + " :" + message + "\r\n");
+//			this.writer.flush();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("> MSG " + channel + " : " + message);
+//	}
+//	
+//	/**
+//	 * A sendMessage variation with an int
+//	 * @param message The message that will be sent
+//	 * @param channel channel The channel where the message will be sent
+//	 */
+//	public void sendMessage(int message, Channel channel)
+//	{
+//		try {
+//			this.writer.write("PRIVMSG " + channel + " :" + message + "\r\n");
+//			this.writer.flush();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("> MSG " + channel + " : " + message);
+//	}
 	
 	/**
 	 * The method to join an IRC channel on Twitch
