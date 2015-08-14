@@ -4,9 +4,11 @@ All rights reserved © 2015 Twitch Interactive, Inc.
 
 ***
 
-IMPORTANT
+## Light-TwitchIRC
+This is a modify version of this Library, I was getting complains and I was experimenting some lag after a long time of usage with the bot, that is because it generates a new Object per User and stores it, it is usefull for short time periods of usage so this is a much better version and lighter It is used the same and has the same features excepting the User|Channel object.
 
-I ran out of Ideas :(, so please suggest me some at the "Issues" label and I will check them
+[![Download TwitchIRC](https://img.shields.io/badge/Light--TwitchIRC-v1.0-yellowgreen.svg)](https://github.com/CavariuX/TwitchIRC/releases/tag/Light_v1.0-Beta)
+
 ***
 
 If You want to learn about how to use the Librarie visit the Wiki!                      
