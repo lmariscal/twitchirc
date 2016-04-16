@@ -28,3 +28,11 @@ If you think you can make any uptimization/things make a fork, in that fork make
 ***
 
 Also, if you liked the Library please give it a star :)
+
+***
+
+## Donations
+
+If you feel that I deserve it I will not make any excuses to say no. And if you still feel that I deserve it but you can't or don't want to at least please share this project and hit that star so this project can continue and more people benefits from it :)
+
+[![Alt text](https://i.imgur.com/PrGfPLD.png "Donate with paypal")](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A42KG4XUAQAA2)
