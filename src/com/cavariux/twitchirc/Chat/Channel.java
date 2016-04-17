@@ -153,9 +153,9 @@ public class Channel {
 	/**
 	 * Put a comercial on air for 30sec (Need Streamer/Editor) 
 	 */
-	public final void comercial()
+	public final void commercial()
 	{
-		this.bot.sendMessage("/comercial", this);
+		this.bot.sendMessage("/commercial", this);
 	}
 	
 	/**
