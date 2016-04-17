@@ -19,7 +19,7 @@ If You want to learn about how to use the Library visit the Wiki!
 
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=plastic)](https://github.com/CavariuX/TwitchIRC/blob/master/LICENSE)
 
-[![Download TwitchIRC](https://img.shields.io/badge/Documentation-v1.0-orange.svg?style=plastic)](http://cavariux.github.io/TwitchIRC/)
+[![Download TwitchIRC](https://img.shields.io/badge/Documentation-v1.0_Beta-orange.svg?style=plastic)](http://cavariux.github.io/TwitchIRC/)
 
 ***
 
