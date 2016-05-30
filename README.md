@@ -2,7 +2,7 @@
 Library Made by CavariuX.      
 All rights reserved © 2016 Twitch Interactive, Inc.
 
-Also please, if you know anything about how to implement whispers make an Issues request.
+Also please, if you know anything about how to implement whispers we would really appreciate your help.
 
 ***
 
