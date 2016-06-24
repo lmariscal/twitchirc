@@ -1,5 +1,5 @@
 # TwitchIRC
-Library Made by CavariuX.      
+This Lib is not longer being develped, feel free to fork and continue it.
 All rights reserved © 2016 Twitch Interactive, Inc.
 
 Also please, if you know anything about how to implement whispers we would really appreciate your help.
