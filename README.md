@@ -1,5 +1,5 @@
 # TwitchIRC
-This Lib is not longer being develped, feel free to fork and continue it.
+This Lib is no longer being developed, feel free to fork it and continue.
 All rights reserved © 2016 Twitch Interactive, Inc.
 
 Also please, if you know anything about how to implement whispers we would really appreciate your help.
@@ -7,7 +7,7 @@ Also please, if you know anything about how to implement whispers we would reall
 ***
 
 ## Light-TwitchIRC
-This is a modfied version of this Library, I was getting complains and I was experimenting some lag after a long time of usage with the bot, that is because it generates a new Object per User and stores it, it is usefull for short time periods of usage but fatal for a 24/7 bot, so this is a much better version and lighter It is used the same and has the same features excepting the User|Channel object.
+This is a modified version of this Library, I was getting complains and I was experimenting some lag after a long time of usage with the bot, that is because it generates a new Object per User and stores it, it is useful for short time periods of usage but fatal for a 24/7 bot, so this is a much better version and lighter It is used the same and has the same features excepting the User|Channel object.
 
 [![Download TwitchIRC](https://img.shields.io/badge/Light--TwitchIRC-v1.0-yellowgreen.svg)](https://github.com/CavariuX/TwitchIRC/releases/tag/Light_v1.0-Beta)
 
@@ -23,7 +23,7 @@ If You want to learn about how to use the Library visit the Wiki!
 
 ***
 
-If you think you can make any uptimization/things make a fork, in that fork make all modifications, then in this page go to pull requests and make a request :D. Thnxs.
+If you think you can make any optimization/things make a fork, in that fork make all modifications, then on this page go to pull requests and make a request :D. Thnxs.
 
 ***
 
