@@ -220,9 +220,10 @@ public class TwitchBot {
 	 */
 	public final Channel joinChannel (String channel)
 	{
-		sendRawMessage("JOIN " + channel + "\r\n");
-		System.out.println("> JOIN " + channel);
-		return Channel.getChannel(channel, this);
+		Channel cnl = Channel.getChannel(channel, this);
+		sendRawMessage("JOIN " + cnl + "\r\n");
+		System.out.println("> JOIN " + cnl);
+		return cnl;
 	}
 	
 	/**
@@ -231,8 +232,9 @@ public class TwitchBot {
 	 */
 	public final void partChannel (String channel)
 	{
-		this.sendRawMessage("PART " + channel);
-		this.channels.remove(channel);
+		Channel cnl = Channel.getChannel(channel, this);
+		this.sendRawMessage("PART " + cnl);
+		this.channels.remove(cnl);
 		System.out.println("> PART " + channel);
 	}
 	
