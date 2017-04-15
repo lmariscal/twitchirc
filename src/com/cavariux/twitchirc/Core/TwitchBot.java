@@ -28,6 +28,7 @@ public class TwitchBot {
 	private BufferedReader reader;
 	private ArrayList<String> channels = new ArrayList<String>();
 	private String version = "v1.0-Beta";
+	private boolean stopped = false;
 	
 	public TwitchBot(){}
 	
@@ -252,7 +253,7 @@ public class TwitchBot {
 		if (started) return;
 		String line = "";
 		try {
-			while ((line = this.reader.readLine( )) != null) {
+			while ((line = this.reader.readLine( )) != null && !stopped) {
 			    if (line.toLowerCase( ).startsWith("ping")) {
 			    	System.out.println("> PING");
 			        System.out.println("< PONG " + line.substring(5));
@@ -320,6 +321,11 @@ public class TwitchBot {
 		}
 		started = true;
 	}
+	
+	protected void stop() {
+		this.stopped = true;
+	}
+	
 	
 	/**
 	 * A user joins the channel
