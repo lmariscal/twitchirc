@@ -222,6 +222,7 @@ public class TwitchBot {
 	{
 		Channel cnl = Channel.getChannel(channel, this);
 		sendRawMessage("JOIN " + cnl + "\r\n");
+		this.channels.add(cnl.toString());
 		System.out.println("> JOIN " + cnl);
 		return cnl;
 	}
@@ -356,9 +357,11 @@ public class TwitchBot {
 	 */
 	public void whisper(User user, String message)
 	{
-		if (!wen) {
-			System.out.println("You cannot send whispers while connected to the default Twitch Server");
-		}
+		if (!channels.isEmpty()) {
+			this.sendMessage(".w " + user + " " + message, Channel.getChannel(channels.get(0), this));
+		} else if (!wen) {
+			System.out.println("You have to be either connected to at least one channel or join another Server to be able to whisper!");
+		} 
 		sendRawMessage("PRIVMSG #jtv :/w " + user + " " + message);
 	}
 	
