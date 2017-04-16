@@ -286,6 +286,11 @@ public class TwitchBot {
 			    	String[] pd = line.split("!");
 			    	if (p[1].equals("PART")) 
 			    		userParts(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
+				} else if (line.contains(" WHISPER ")) {
+					String[] parts = line.split(":");
+					final User wsp_user = User.getUser(parts[1].split("!")[0]);
+					String message = parts[2];
+					onWhisper(wsp_user, message);
 				} else if (line.startsWith(":tmi.twitch.tv ROOMSTATE")) {
 			    	
 				} else if (line.startsWith(":tmi.twitch.tv NOTICE"))
@@ -361,8 +366,9 @@ public class TwitchBot {
 			this.sendMessage(".w " + user + " " + message, Channel.getChannel(channels.get(0), this));
 		} else if (!wen) {
 			System.out.println("You have to be either connected to at least one channel or join another Server to be able to whisper!");
-		} 
-		sendRawMessage("PRIVMSG #jtv :/w " + user + " " + message);
+		} else {
+			sendRawMessage("PRIVMSG #jtv :/w " + user + " " + message);
+		}
 	}
 	
 	/**
