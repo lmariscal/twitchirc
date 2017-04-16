@@ -28,6 +28,7 @@ public class TwitchBot {
 	private BufferedReader reader;
 	private ArrayList<String> channels = new ArrayList<String>();
 	private String version = "v1.0-Beta";
+	private boolean stopped = false;
 	
 	public TwitchBot(){}
 	
@@ -219,9 +220,11 @@ public class TwitchBot {
 	 */
 	public final Channel joinChannel (String channel)
 	{
-		sendRawMessage("JOIN " + channel + "\r\n");
-		System.out.println("> JOIN " + channel);
-		return Channel.getChannel(channel, this);
+		Channel cnl = Channel.getChannel(channel, this);
+		sendRawMessage("JOIN " + cnl + "\r\n");
+		this.channels.add(cnl.toString());
+		System.out.println("> JOIN " + cnl);
+		return cnl;
 	}
 	
 	/**
@@ -230,8 +233,9 @@ public class TwitchBot {
 	 */
 	public final void partChannel (String channel)
 	{
-		this.sendRawMessage("PART " + channel);
-		this.channels.remove(channel);
+		Channel cnl = Channel.getChannel(channel, this);
+		this.sendRawMessage("PART " + cnl);
+		this.channels.remove(cnl);
 		System.out.println("> PART " + channel);
 	}
 	
@@ -252,7 +256,7 @@ public class TwitchBot {
 		if (started) return;
 		String line = "";
 		try {
-			while ((line = this.reader.readLine( )) != null) {
+			while ((line = this.reader.readLine( )) != null && !stopped) {
 			    if (line.toLowerCase( ).startsWith("ping")) {
 			    	System.out.println("> PING");
 			        System.out.println("< PONG " + line.substring(5));
@@ -321,6 +325,11 @@ public class TwitchBot {
 		started = true;
 	}
 	
+	protected void stop() {
+		this.stopped = true;
+	}
+	
+	
 	/**
 	 * A user joins the channel
 	 * @param user The user that has join
@@ -348,9 +357,11 @@ public class TwitchBot {
 	 */
 	public void whisper(User user, String message)
 	{
-		if (!wen) {
-			System.out.println("You cannot send whispers while connected to the default Twitch Server");
-		}
+		if (!channels.isEmpty()) {
+			this.sendMessage(".w " + user + " " + message, Channel.getChannel(channels.get(0), this));
+		} else if (!wen) {
+			System.out.println("You have to be either connected to at least one channel or join another Server to be able to whisper!");
+		} 
 		sendRawMessage("PRIVMSG #jtv :/w " + user + " " + message);
 	}
 	
