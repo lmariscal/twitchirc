@@ -1,10 +1,5 @@
 # TwitchIRC
-This Lib is no longer being developed, feel free to fork it and continue.
 All rights reserved © 2016 Twitch Interactive, Inc.
-
-Also please, if you know anything about how to implement whispers we would really appreciate your help.
-
-***
 
 ## Light-TwitchIRC
 This is a modified version of this Library, I was getting complains and I was experimenting some lag after a long time of usage with the bot, that is because it generates a new Object per User and stores it, it is useful for short time periods of usage but fatal for a 24/7 bot, so this is a much better version and lighter It is used the same and has the same features excepting the User|Channel object.
