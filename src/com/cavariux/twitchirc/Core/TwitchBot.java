@@ -22,13 +22,13 @@ public class TwitchBot {
 	private int whispers_port = 443;
 	private boolean wen = true;
 	private String user;
-	private boolean started = false;
 	private String oauth_key;
 	private BufferedWriter writer;
 	private BufferedReader reader;
 	private ArrayList<String> channels = new ArrayList<String>();
 	private String version = "v1.0-Beta";
-	private boolean stopped = false;
+	private boolean stopped = true;
+	private String commandTrigger = "!";
 	
 	public TwitchBot(){}
 	
@@ -47,7 +47,7 @@ public class TwitchBot {
 	 */
 	public void connect(String ip, int port)
 	{
-		if (started) return;
+		if (isRunning()) return;
 		try{
 			if (user == null || user == "")
 			{
@@ -253,8 +253,9 @@ public class TwitchBot {
 	 */
 	public final void start()
 	{
-		if (started) return;
+		if (isRunning()) return;
 		String line = "";
+		stopped = false;
 		try {
 			while ((line = this.reader.readLine( )) != null && !stopped) {
 			    if (line.toLowerCase( ).startsWith("ping")) {
@@ -272,7 +273,7 @@ public class TwitchBot {
 			        msg_channel = Channel.getChannel(str[2], this);
 			        String msg_msg = line.substring((str[0].length() + str[1].length() + str[2].length() + 4), line.length());
 			        System.out.println("> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
-			        if (msg_msg.startsWith("!"))
+			        if (msg_msg.startsWith(commandTrigger))
 			        	onCommand(msg_user, msg_channel, msg_msg.substring(1));
 			        
 			        onMessage(msg_user, msg_channel, msg_msg);
@@ -327,13 +328,30 @@ public class TwitchBot {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		started = true;
 	}
 	
-	protected void stop() {
+	/**
+	 * Simply stops the bot.
+	 */
+	public void stop() {
 		this.stopped = true;
+		this.sendRawMessage("Stopping"); //so that the bot has one message to process to actually stop
 	}
 	
+	/**
+	 * Stops the bot and sends a message to all channels the bot has joined
+	 * @param message Message to send to all channels
+	 */
+	public void stopWithMessage(String message) {
+		this.stopped = true;
+		for (String cnl : channels) {
+			this.sendMessage(message, Channel.getChannel(cnl, this));
+		}
+	}
+
+	public boolean isRunning() {
+		return !stopped;
+	}
 	
 	/**
 	 * A user joins the channel
@@ -407,6 +425,14 @@ public class TwitchBot {
 	}
 	
 	/**
+	 * Sets the string that will mark a message as command if it begins with it
+	 * @param trigger string to mark a message as command
+	 */
+	public void setCommandTrigger(String trigger) {
+		this.commandTrigger = trigger;
+	}
+	
+	/**
 	 * Get the version of the TwitchIRC lib
 	 * @return the version of the TwitchIRC lib
 	 */
@@ -414,4 +440,5 @@ public class TwitchBot {
 	{
 		return "TwitchIRC "+version;
 	}
+	
 }
