@@ -7,12 +7,10 @@ This is a modified version, this version is lighter sacrificing the "User" and "
 
 ***
 
-If You want to learn about how to use the Library visit the Wiki!                      
+If You want to learn about how to use the Library visit the [Wiki](https://github.com/cavariux/TwitchIRC/wiki)!                      
 
 [![Download TwitchIRC](https://img.shields.io/badge/TwitchIRC-v1.0-green.svg?style=plastic)](https://github.com/CavariuX/TwitchIRC/releases/tag/v1.0-Beta)
-
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg?style=plastic)](https://github.com/CavariuX/TwitchIRC/blob/master/LICENSE)
-
 [![Download TwitchIRC](https://img.shields.io/badge/Documentation-v1.0_Beta-orange.svg?style=plastic)](http://cavariux.github.io/TwitchIRC/)
 
 ***
