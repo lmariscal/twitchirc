@@ -29,6 +29,7 @@ public class TwitchBot {
 	private String version = "v1.0-Beta";
 	private boolean stopped = true;
 	private String commandTrigger = "!";
+	private String clientID = "";
 	
 	public TwitchBot(){}
 	
@@ -99,9 +100,29 @@ public class TwitchBot {
 	 * Set the username that the connect method will use
 	 * @param username Needs your <a href="http://www.twitch.tv">Twitch</a> Username to connect
 	 */
-	 public final void setUsername(String username)
-	{
+	public final void setUsername(String username) {
 		this.user = username;
+	}
+	 
+	/**
+	 * Sets the required ClientID for the use of the api.
+	 * @param clientID
+	 */
+	public final void setClientID(String clientID) {
+		this.clientID = clientID;
+	}
+	
+	/**
+	 * Method to return the clientid.
+	 * @return The clientid
+	 */
+	public final String getClientID() {
+		if (this.clientID != null)
+			return this.clientID;
+		else {
+			System.out.println("You need to give a clientID to use the TwitchAPI");
+			return "";
+		}
 	}
 	
 	 /**
@@ -220,8 +241,8 @@ public class TwitchBot {
 	 */
 	public final Channel joinChannel (String channel)
 	{
-		Channel cnl = Channel.getChannel(channel, this);
-		sendRawMessage("JOIN " + cnl + "\r\n");
+		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
+		sendRawMessage("JOIN " + cnl.toString().toLowerCase() + "\r\n");
 		this.channels.add(cnl.toString());
 		System.out.println("> JOIN " + cnl);
 		return cnl;
@@ -233,7 +254,7 @@ public class TwitchBot {
 	 */
 	public final void partChannel (String channel)
 	{
-		Channel cnl = Channel.getChannel(channel, this);
+		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
 		this.sendRawMessage("PART " + cnl);
 		this.channels.remove(cnl);
 		System.out.println("> PART " + channel);
