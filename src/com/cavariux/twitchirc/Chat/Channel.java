@@ -3,11 +3,14 @@ package com.cavariux.twitchirc.Chat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import com.cavariux.twitchirc.Core.TwitchBot;
 import com.cavariux.twitchirc.Json.JsonArray;
@@ -382,14 +385,23 @@ public class Channel {
 	public final int getFollowersNum()
 	{
 		try {
-			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
-			URLConnection conn = url.openConnection();
+			URL url = new URL("https://api.twitch.tv/kraken/channels/" + channel.substring(1) + "/follows");
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
-	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
-	        int str = jsonObj.get("stream").asObject().get("channel").asObject().get("followers").asInt();
-	        return str;
+	        String inputLine = "";
+	        String str = "";
+	        while ((str = br.readLine()) != null) {
+				inputLine = inputLine + str;
+	        }
+	        br.close();
+	        JsonObject jsonObj = JsonObject.readFrom(inputLine);
+	        int stri = jsonObj.get("_total").asInt();
+	        return stri;
 		} catch (IOException ex) {
+			System.out.println("Errur:");
+			System.out.println(ex.getMessage());
 			return 0;
 		}
 	}
