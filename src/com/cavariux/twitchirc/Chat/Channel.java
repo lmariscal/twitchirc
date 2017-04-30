@@ -304,8 +304,8 @@ public class Channel {
 	 * Get the game the streamer is streaming
 	 * @return The game name
 	 */
-	public final String getGame()
-	{
+	public final String getGame() {
+		if (!this.isLive()) return "";
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
@@ -325,8 +325,8 @@ public class Channel {
 	 * Get the title that the Streamer put
 	 * @return the title
 	 */
-	public final String getTitle()
-	{
+	public final String getTitle() {
+		if (!this.isLive()) return "";
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
@@ -344,8 +344,8 @@ public class Channel {
 	 * Get the viewers on that stream
 	 * @return the number of viewers seeing the stream
 	 */
-	public final int getViewersNum()
-	{
+	public final int getViewersNum() {
+		if (!this.isLive()) return 0;
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
@@ -363,8 +363,7 @@ public class Channel {
 	 * Get the language the streamer is streaming
 	 * @return the language in the streamer is streaming
 	 */
-	public final String getLanguange()
-	{
+	public final String getLanguange() {
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
