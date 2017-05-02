@@ -3,7 +3,7 @@ All rights reserved © 2016 Twitch Interactive, Inc.
 
 ## Light-TwitchIRC
 This is a modified version, this version is lighter sacrificing the "User" and "Channel" objects.  
-[![Download TwitchIRC](https://img.shields.io/badge/Light--TwitchIRC-v1.0-yellowgreen.svg)](https://github.com/CavariuX/TwitchIRC/releases/tag/Light_v1.0-Beta)
+[![Download TwitchIRC](https://img.shields.io/badge/Light--TwitchIRC-v1.1-yellowgreen.svg)](https://github.com/cavariux/TwitchIRC/releases/download/Light_v1.1-Beta/Light-TwitchIRC_v1.1-Beta.jar)
 
 ***
 
