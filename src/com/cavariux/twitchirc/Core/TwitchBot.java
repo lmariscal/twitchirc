@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.cavariux.twitchirc.Chat.Channel;
 import com.cavariux.twitchirc.Chat.User;
@@ -30,6 +31,10 @@ public class TwitchBot {
 	private boolean stopped = true;
 	private String commandTrigger = "!";
 	private String clientID = "";
+	
+	public final List<Channel> getChannels(){
+		return Channel.getChannels();
+	}
 	
 	public TwitchBot(){}
 	

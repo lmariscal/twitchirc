@@ -29,6 +29,10 @@ public class Channel {
 	private TwitchBot bot;
 	private static HashMap<String, Channel> channels = new HashMap<String, Channel>();
 	
+	public static List<Channel> getChannels() {
+		return new ArrayList<Channel>(channels.values()); 
+	}
+	
 	/**
 	 * The constructor of the channel object
 	 * @param channel The name of the Channel
