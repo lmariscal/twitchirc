@@ -407,7 +407,8 @@ public class TwitchBot {
 	public void whisper(User user, String message)
 	{
 		if (!channels.isEmpty()) {
-			this.sendMessage(".w " + user + " " + message, Channel.getChannel(channels.get(0), this));
+			this.sendMessage("/w " + user + " " + message, Channel.getChannel(channels.get(0), this));
+			
 		} else if (!wen) {
 			System.out.println("You have to be either connected to at least one channel or join another Server to be able to whisper!");
 		} else {
