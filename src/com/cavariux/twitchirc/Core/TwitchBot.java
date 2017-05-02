@@ -19,7 +19,9 @@ import com.cavariux.twitchirc.Chat.User;
  */
 public class TwitchBot {
 	
+	@SuppressWarnings("unused")
 	private String whispers_ip = "";
+	@SuppressWarnings("unused")
 	private int whispers_port = 443;
 	private boolean wen = true;
 	private String user;
@@ -244,6 +246,7 @@ public class TwitchBot {
 	 * @param channel The channel name
 	 * @return You can get the channel you just created
 	 */
+	@SuppressWarnings( "deprecation" )
 	public final Channel joinChannel (String channel)
 	{
 		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
