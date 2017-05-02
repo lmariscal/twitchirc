@@ -9,9 +9,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cavariux.twitchirc.Chat.Channel;
-import com.cavariux.twitchirc.Chat.User;
-
 /**
  * The main object to start making your bot
  * @author Leonardo Mariscal
@@ -28,14 +25,14 @@ public class TwitchBot {
 	private String oauth_key;
 	private BufferedWriter writer;
 	private BufferedReader reader;
-	private ArrayList<String> channels = new ArrayList<String>();
-	private String version = "v1.0-Beta";
+	private ArrayList<String> channels = new ArrayList<>();
+	private String version = "v1.2";
 	private boolean stopped = true;
 	private String commandTrigger = "!";
 	private String clientID = "";
 	
-	public final List<Channel> getChannels(){
-		return Channel.getChannels();
+	public final List<String> getChannels(){
+		return channels;
 	}
 	
 	public TwitchBot(){}
@@ -78,8 +75,7 @@ public class TwitchBot {
 			this.writer.write("PASS " + oauth_key + "\r\n");
 			this.writer.write("NICK " + user + "\r\n");
 			this.writer.write("USER " + this.getVersion() + " \r\n");
-			this.writer.write("CAP REQ :twitch.tv/commands \r\n");
-			this.writer.write("CAP REQ :twitch.tv/membership \r\n");
+			this.writer.write("CAP REQ :twitch.tv/commands twitch.tv/membership \r\n");
 			this.writer.flush();
 			
 			String line = "";
@@ -97,12 +93,7 @@ public class TwitchBot {
 			e.printStackTrace();
 		}
 	}
-	
-	protected void onSub(User user, Channel channel, String message)
-	{
-		
-	}
-	
+
 	/**
 	 * Set the username that the connect method will use
 	 * @param username Needs your <a href="http://www.twitch.tv">Twitch</a> Username to connect
@@ -147,8 +138,7 @@ public class TwitchBot {
 	 * @param channel The channel where the message was sent
 	 * @param message The message
 	 */
-	protected void onMessage(User user, Channel channel, String message)
-	{
+	protected void onMessage(String user, String channel, String message) {
 		
 	}
 	
@@ -156,10 +146,9 @@ public class TwitchBot {
 	 * This method is called when a command is sent on the Twitch Chat.
 	 * @param user The user is sent, if you put it on a String it will give you the user's nick
 	 * @param channel The channel where the command was sent
-	 * @param message The command
+	 * @param command The command
 	 */
-	protected void onCommand(User user, Channel channel, String command)
-	{
+	protected void onCommand(String user, String channel, String command) {
 		
 	}
 	
@@ -198,7 +187,7 @@ public class TwitchBot {
 	 * @param message The message that will be sent
 	 * @param channel The channel where the message will be sent
 	 */
-	public void sendMessage(Object message, Channel channel)
+	public void sendMessage(Object message, String channel)
 	{
 		try {
 			this.writer.write("PRIVMSG " + channel + " :" + message.toString() + "\r\n");
@@ -247,13 +236,11 @@ public class TwitchBot {
 	 * @return You can get the channel you just created
 	 */
 	@SuppressWarnings( "deprecation" )
-	public final Channel joinChannel (String channel)
-	{
-		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
-		sendRawMessage("JOIN " + cnl.toString().toLowerCase() + "\r\n");
-		this.channels.add(cnl.toString());
-		System.out.println("> JOIN " + cnl);
-		return cnl;
+	public final String joinChannel (String channel) {
+		sendRawMessage("JOIN " + channel + "\r\n");
+		this.channels.add(channel);
+		System.out.println("> JOIN " + channel);
+		return channel;
 	}
 	
 	/**
@@ -262,9 +249,8 @@ public class TwitchBot {
 	 */
 	public final void partChannel (String channel)
 	{
-		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
-		this.sendRawMessage("PART " + cnl);
-		this.channels.remove(cnl);
+		this.sendRawMessage("PART " + channel);
+		this.channels.remove(channel);
 		System.out.println("> PART " + channel);
 	}
 	
@@ -296,10 +282,10 @@ public class TwitchBot {
 			    {
 			        String str[];
 			        str = line.split("!");
-			        final User msg_user = User.getUser(str[0].substring(1, str[0].length()));
+			        final String msg_user = str[0].substring(1, str[0].length());
 			        str = line.split(" ");
-			        Channel msg_channel;
-			        msg_channel = Channel.getChannel(str[2], this);
+			        String msg_channel;
+			        msg_channel = str[2];
 			        String msg_msg = line.substring((str[0].length() + str[1].length() + str[2].length() + 4), line.length());
 			        System.out.println("> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
 			        if (msg_msg.startsWith(commandTrigger))
@@ -310,15 +296,15 @@ public class TwitchBot {
 			    	String[] p = line.split(" ");
 			    	String[] pd = line.split("!");
 			    	if (p[1].equals("JOIN")) 
-			    		userJoins(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
+			    		userJoins(pd[0].substring(1), p[2]);
 				} else if (line.contains(" PART ")) {
 			    	String[] p = line.split(" ");
 			    	String[] pd = line.split("!");
 			    	if (p[1].equals("PART")) 
-			    		userParts(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
+			    		userParts(pd[0].substring(1), p[2]);
 				} else if (line.contains(" WHISPER ")) {
 					String[] parts = line.split(":");
-					final User wsp_user = User.getUser(parts[1].split("!")[0]);
+					final String wsp_user = parts[1].split("!")[0];
 					String message = parts[2];
 					onWhisper(wsp_user, message);
 				} else if (line.startsWith(":tmi.twitch.tv ROOMSTATE")) {
@@ -374,7 +360,7 @@ public class TwitchBot {
 	public void stopWithMessage(String message) {
 		this.stopped = true;
 		for (String cnl : channels) {
-			this.sendMessage(message, Channel.getChannel(cnl, this));
+			this.sendMessage(message, cnl);
 		}
 	}
 
@@ -387,8 +373,7 @@ public class TwitchBot {
 	 * @param user The user that has join
 	 * @param channel The channel he joined
 	 */
-	protected void userJoins(User user, Channel channel)
-	{
+	protected void userJoins(String user, String channel) {
 		
 	}
 	
@@ -397,7 +382,7 @@ public class TwitchBot {
 	 * @param user The user that has left
 	 * @param channel The channel he left
 	 */
-	protected void userParts(User user, Channel channel)
+	protected void userParts(String user, String channel)
 	{
 		
 	}
@@ -407,10 +392,10 @@ public class TwitchBot {
 	 * @param user The user to send the message
 	 * @param message The messsage to send
 	 */
-	public void whisper(User user, String message)
+	public void whisper(String user, String message)
 	{
 		if (!channels.isEmpty()) {
-			this.sendMessage("/w " + user + " " + message, Channel.getChannel(channels.get(0), this));
+			this.sendMessage("/w " + user + " " + message, channels.get(0));
 			
 		} else if (!wen) {
 			System.out.println("You have to be either connected to at least one channel or join another Server to be able to whisper!");
@@ -424,8 +409,7 @@ public class TwitchBot {
 	 * @param user The user that sent it
 	 * @param message The message he sent
 	 */
-	protected void onWhisper(User user, String message)
-	{
+	protected void onWhisper(String user, String message) {
 	}
 	
 	/**
