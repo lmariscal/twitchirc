@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.cavariux.twitchirc.Chat.Channel;
 import com.cavariux.twitchirc.Chat.User;
@@ -33,6 +35,8 @@ public class TwitchBot {
 	private boolean stopped = true;
 	private String commandTrigger = "!";
 	private String clientID = "";
+
+	private static final Logger LOGGER = Logger.getLogger(TwitchBot.class.getName());
 	
 	public final List<Channel> getChannels(){
 		return Channel.getChannels();
@@ -59,13 +63,13 @@ public class TwitchBot {
 		try{
 			if (user == null || user == "")
 			{
-				System.err.println("Please select a valid Username");
+				LOGGER.log(Level.SEVERE, "Please select a valid Username");
 				System.exit(1);
 				return;
 			}
 			if (oauth_key == null || oauth_key == "")
 			{
-				System.err.println("Please select a valid Oauth_Key");
+				LOGGER.log(Level.SEVERE,"Please select a valid Oauth_Key");
 				System.exit(2);
 				return;
 			}
@@ -86,10 +90,10 @@ public class TwitchBot {
 			while ((line = this.reader.readLine()) != null)
 			{
 				 if (line.indexOf("004") >= 0) {
-		                System.out.println("Connected >> " + user + " ~ irc.twitch.tv");
+		                LOGGER.log(Level.INFO,"Connected >> " + user + " ~ irc.twitch.tv");
 		                break;
 		            }else {
-		                System.out.println(line);
+		                LOGGER.log(Level.INFO,line);
 		            }	
 			}
 		} catch (IOException e)
@@ -127,7 +131,7 @@ public class TwitchBot {
 		if (this.clientID != null)
 			return this.clientID;
 		else {
-			System.out.println("You need to give a clientID to use the TwitchAPI");
+			LOGGER.log(Level.INFO,"You need to give a clientID to use the TwitchAPI");
 			return "";
 		}
 	}
@@ -175,11 +179,13 @@ public class TwitchBot {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-//		System.out.println(message);
+//		LOGGER.log(Level.INFO,message);
 //	}
 	
 	/**
 	 * An int variation of the sendRawMessage(String)
+     *
+     * message had to be appended with .toString()
 	 * @param message the command you will sent
 	 */
 	public void sendRawMessage(Object message)
@@ -190,7 +196,7 @@ public class TwitchBot {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(message);
+		LOGGER.log(Level.INFO, message.toString());
 	}
 	
 	/**
@@ -206,7 +212,7 @@ public class TwitchBot {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("> MSG " + channel + " : " + message.toString());
+		LOGGER.log(Level.INFO,"> MSG " + channel + " : " + message.toString());
 	}
 	
 //	/**
@@ -222,7 +228,7 @@ public class TwitchBot {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-//		System.out.println("> MSG " + channel + " : " + message);
+//		LOGGER.log(Level.INFO,"> MSG " + channel + " : " + message);
 //	}
 //	
 //	/**
@@ -238,8 +244,32 @@ public class TwitchBot {
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-//		System.out.println("> MSG " + channel + " : " + message);
+//		LOGGER.log(Level.INFO,"> MSG " + channel + " : " + message);
 //	}
+
+	//<editor-fold desc="Rhodderz Code">
+
+    /**
+     * Returns the logger for this library.
+     * @return Logger
+     */
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
+
+    /**
+     * Experimetal, see if we can change the nick of the bot.
+     * @param newNick
+     */
+    public void setNick(String newNick){
+        try {
+            this.writer.write("NICK " + newNick + "\r\n");
+        }catch (IOException ioe){
+
+        }
+    }
+
+    //</editor-fold>
 	
 	/**
 	 * The method to join an IRC channel on Twitch
@@ -252,7 +282,7 @@ public class TwitchBot {
 		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
 		sendRawMessage("JOIN " + cnl.toString().toLowerCase() + "\r\n");
 		this.channels.add(cnl.toString());
-		System.out.println("> JOIN " + cnl);
+		LOGGER.log(Level.INFO,"> JOIN " + cnl);
 		return cnl;
 	}
 	
@@ -265,7 +295,7 @@ public class TwitchBot {
 		Channel cnl = Channel.getChannel(channel.toLowerCase(), this);
 		this.sendRawMessage("PART " + cnl);
 		this.channels.remove(cnl);
-		System.out.println("> PART " + channel);
+		LOGGER.log(Level.INFO,"> PART " + channel);
 	}
 	
 	/**
@@ -288,8 +318,8 @@ public class TwitchBot {
 		try {
 			while ((line = this.reader.readLine( )) != null && !stopped) {
 			    if (line.toLowerCase( ).startsWith("ping")) {
-			    	System.out.println("> PING");
-			        System.out.println("< PONG " + line.substring(5));
+			    	LOGGER.log(Level.INFO,"> PING");
+			        LOGGER.log(Level.INFO,"< PONG " + line.substring(5));
 			        this.writer.write("PONG " + line.substring(5) + "\r\n");
 			        this.writer.flush();
 			    } else if (line.contains("PRIVMSG"))
@@ -301,7 +331,7 @@ public class TwitchBot {
 			        Channel msg_channel;
 			        msg_channel = Channel.getChannel(str[2], this);
 			        String msg_msg = line.substring((str[0].length() + str[1].length() + str[2].length() + 4), line.length());
-			        System.out.println("> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
+			        LOGGER.log(Level.INFO,"> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
 			        if (msg_msg.startsWith(commandTrigger))
 			        	onCommand(msg_user, msg_channel, msg_msg.substring(1));
 			        
@@ -328,30 +358,30 @@ public class TwitchBot {
 			    	String[] parts = line.split(" ");
 			    	if (line.contains("This room is now in slow mode. You may send messages every"))
 			    	{
-			    		System.out.println("> Chat is now in slow mode. You can send messages every " + parts[15] + " sec(s)!");
+			    		LOGGER.log(Level.INFO,"> Chat is now in slow mode. You can send messages every " + parts[15] + " sec(s)!");
 			    	} else if (line.contains("subscribers-only mode")) {
 			    		if (line.contains("This room is no longer"))
-			    			System.out.println("> The room is no longer Subscribers Only!");
+			    			LOGGER.log(Level.INFO,"> The room is no longer Subscribers Only!");
 			    		else
-			    			System.out.println("> The room has been set to Subscribers Only!");
+			    			LOGGER.log(Level.INFO,"> The room has been set to Subscribers Only!");
 			    	} else {
-			    		System.out.println(line);
+			    		LOGGER.log(Level.INFO,line);
 			    	}
 			    } else if (line.startsWith(":jtv MODE "))
 			    {
 			    	String[] p = line.split(" ");
 			    	if (p[3].equals("+o")) {
-			    		System.out.println("> +o " + p[4]);
+			    		LOGGER.log(Level.INFO,"> +o " + p[4]);
 			    	} else {
-			    		System.out.println("> -o " + p[4]);
+			    		LOGGER.log(Level.INFO,"> -o " + p[4]);
 			    	}
 			    }else if (line.toLowerCase().contains("disconnected"))
 			    {
-			    	System.out.println(line);
+			    	LOGGER.log(Level.INFO,line);
 			    	this.connect();
 			    } else
 			    {
-			        System.out.println("> " + line);
+			        LOGGER.log(Level.INFO,"> " + line);
 			    }
 			}
 		} catch (IOException e) {
@@ -413,7 +443,7 @@ public class TwitchBot {
 			this.sendMessage("/w " + user + " " + message, Channel.getChannel(channels.get(0), this));
 			
 		} else if (!wen) {
-			System.out.println("You have to be either connected to at least one channel or join another Server to be able to whisper!");
+			LOGGER.log(Level.INFO,"You have to be either connected to at least one channel or join another Server to be able to whisper!");
 		} else {
 			sendRawMessage("PRIVMSG #jtv :/w " + user + " " + message);
 		}
@@ -435,7 +465,7 @@ public class TwitchBot {
 	protected final void setWhispersIp(String ip)
 	{
 		if (!ip.contains(":")) {
-			System.out.println("Invaid ip!");
+			LOGGER.log(Level.INFO,"Invaid ip!");
 			return;
 		}
 		String[] args = ip.split(":");
