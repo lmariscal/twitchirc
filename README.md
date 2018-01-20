@@ -18,4 +18,8 @@ If You want to learn about how to use the Library visit the [Wiki](https://githu
 If you think you can make an optimization feel free to make a fork. In that fork make all modifications you need an then on this page go to pull requests and make a request. Thanks.
 
 ***
+
+Build the project with gradle using `> gradle fatjar`. The jar can then be found in `<projectroot>\build\libs\`
+
+***
 Please support us by sharing this library and hitting that star button. Thank you.
