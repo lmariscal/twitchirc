@@ -3,6 +3,7 @@ package com.cavariux.twitchirc.Chat;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -25,6 +26,10 @@ public class Channel {
 	private String channel;
 	private TwitchBot bot;
 	private static HashMap<String, Channel> channels = new HashMap<String, Channel>();
+	
+	public static List<Channel> getChannels() {
+		return new ArrayList<Channel>(channels.values()); 
+	}
 	
 	/**
 	 * The constructor of the channel object
@@ -188,8 +193,7 @@ public class Channel {
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        String inputLine = "";
 	        String str = "";
-	        while ((str = br.readLine()) != null)
-	        {
+	        while ((str = br.readLine()) != null) {
 	        	inputLine = inputLine + str;
 	        }
 	        br.close();
@@ -212,8 +216,7 @@ public class Channel {
 	 * Get the currently viewers (This method is on beta so it may not be optimized)
 	 * @return A String[] with all the current viewers
 	 */
-	public final List<User> getMods()
-	{
+	public final List<User> getMods() {
 		URL url;
 		try {
 			url = new URL(urln.replace("$channel$", channel.toString().substring(1)));
@@ -221,9 +224,8 @@ public class Channel {
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        String inputLine = "";
 	        String str = "";
-	        while ((str = br.readLine()) != null)
-	        {
-	        	inputLine = inputLine + str;
+	        while ((str = br.readLine()) != null) {
+				inputLine = inputLine + str;
 	        }
 	        br.close();
 	        JsonObject jsonObj = JsonObject.readFrom(inputLine);
@@ -243,8 +245,7 @@ public class Channel {
 	 * @param user The user
 	 * @return true : false
 	 */
-	public final boolean isMod(User user)
-	{
+	public final boolean isMod(User user) {
 		return this.getMods().contains(user);
 	}
 	
@@ -259,6 +260,7 @@ public class Channel {
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/users/" + user.toString().toLowerCase() + "/follows/channels/" + channel.substring(1).toLowerCase());
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        String str = jsonObj.get("channel").asObject().get("status").toString();
@@ -280,6 +282,7 @@ public class Channel {
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/channels/" + channel.substring(1).toLowerCase() + "/subscriptions/" + user.toString().toLowerCase() + "?oauth_token=" + oauth_token);
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        String str = jsonObj.get("_id").asString();
@@ -295,33 +298,23 @@ public class Channel {
 	 * Check if the channel is in Stream
 	 * @return Returns the state
 	 */
-	public final boolean isLive()
-	{
-		try {
-			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
-			URLConnection conn = url.openConnection();
-	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
-	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
-	        String str = jsonObj.get("stream").toString();
-	        return !str.equals("null");
-		} catch (IOException ex) {
-			return false;
-		}
+	public final boolean isLive() {
+		return Channel.isLive(this, bot);
 	}
 
 	/**
 	 * Get the game the streamer is streaming
 	 * @return The game name
 	 */
-	public final String getGame()
-	{
+	public final String getGame() {
+		if (!this.isLive()) return "";
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        String strs = br.readLine();
 	        JsonObject jsonObj = JsonObject.readFrom(strs);
-	        System.out.println(strs);
 	        String str = jsonObj.get("stream").asObject().get("game").asString();
 	        return str;
 		} catch (IOException ex) {
@@ -334,11 +327,12 @@ public class Channel {
 	 * Get the title that the Streamer put
 	 * @return the title
 	 */
-	public final String getTitle()
-	{
+	public final String getTitle() {
+		if (!this.isLive()) return "";
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        String str = jsonObj.get("stream").asObject().get("channel").asObject().get("status").asString();
@@ -352,11 +346,12 @@ public class Channel {
 	 * Get the viewers on that stream
 	 * @return the number of viewers seeing the stream
 	 */
-	public final int getViewersNum()
-	{
+	public final int getViewersNum() {
+		if (!this.isLive()) return 0;
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        int i = jsonObj.get("stream").asObject().get("viewers").asInt();
@@ -370,11 +365,11 @@ public class Channel {
 	 * Get the language the streamer is streaming
 	 * @return the language in the streamer is streaming
 	 */
-	public final String getLanguange()
-	{
+	public final String getLanguange() {
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        String str = jsonObj.get("stream").asObject().get("channel").asObject().get("language").asString();
@@ -391,13 +386,23 @@ public class Channel {
 	public final int getFollowersNum()
 	{
 		try {
-			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
-			URLConnection conn = url.openConnection();
+			URL url = new URL("https://api.twitch.tv/kraken/channels/" + channel.substring(1) + "/follows");
+			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
-	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
-	        int str = jsonObj.get("stream").asObject().get("channel").asObject().get("followers").asInt();
-	        return str;
+	        String inputLine = "";
+	        String str = "";
+	        while ((str = br.readLine()) != null) {
+				inputLine = inputLine + str;
+	        }
+	        br.close();
+	        JsonObject jsonObj = JsonObject.readFrom(inputLine);
+	        int stri = jsonObj.get("_total").asInt();
+	        return stri;
 		} catch (IOException ex) {
+			System.out.println("Errur:");
+			System.out.println(ex.getMessage());
 			return 0;
 		}
 	}
@@ -411,6 +416,7 @@ public class Channel {
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.substring(1));
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        int str = jsonObj.get("stream").asObject().get("channel").asObject().get("views").asInt();
@@ -425,11 +431,12 @@ public class Channel {
 	 * @param channel the channel to check
 	 * @return Returns the state
 	 */
-	public static final boolean isLive(Channel channel)
+	public static final boolean isLive(Channel channel, TwitchBot bot)
 	{
 		try {
 			URL url = new URL("https://api.twitch.tv/kraken/streams/" + channel.toString().substring(1));
 			URLConnection conn = url.openConnection();
+			conn.setRequestProperty("Client-ID", bot.getClientID());
 	        BufferedReader br = new BufferedReader( new InputStreamReader( conn.getInputStream() ));
 	        JsonObject jsonObj = JsonObject.readFrom(br.readLine());
 	        String str = jsonObj.get("stream").toString();
