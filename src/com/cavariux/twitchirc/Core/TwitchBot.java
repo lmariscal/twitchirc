@@ -94,7 +94,7 @@ public class TwitchBot {
 		                break;
 		            }else {
 		                LOGGER.log(Level.INFO,line);
-		            }	
+		            }
 			}
 		} catch (IOException e)
 		{
@@ -114,7 +114,7 @@ public class TwitchBot {
 	public final void setUsername(String username) {
 		this.user = username;
 	}
-	 
+	
 	/**
 	 * Sets the required ClientID for the use of the api.
 	 * @param clientID
@@ -160,11 +160,16 @@ public class TwitchBot {
 	 * This method is called when a command is sent on the Twitch Chat.
 	 * @param user The user is sent, if you put it on a String it will give you the user's nick
 	 * @param channel The channel where the command was sent
-	 * @param message The command
+	 * @param command The command
 	 */
 	protected void onCommand(User user, Channel channel, String command)
 	{
 		
+	}
+	
+	protected void onHost(User hoster, Channel hosted)
+	{
+	
 	}
 	
 //	/**
@@ -339,12 +344,12 @@ public class TwitchBot {
 			    } else if (line.contains(" JOIN ")) {
 			    	String[] p = line.split(" ");
 			    	String[] pd = line.split("!");
-			    	if (p[1].equals("JOIN")) 
+			    	if (p[1].equals("JOIN"))
 			    		userJoins(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
 				} else if (line.contains(" PART ")) {
 			    	String[] p = line.split(" ");
 			    	String[] pd = line.split("!");
-			    	if (p[1].equals("PART")) 
+			    	if (p[1].equals("PART"))
 			    		userParts(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
 				} else if (line.contains(" WHISPER ")) {
 					String[] parts = line.split(":");
@@ -352,7 +357,7 @@ public class TwitchBot {
 					String message = parts[2];
 					onWhisper(wsp_user, message);
 				} else if (line.startsWith(":tmi.twitch.tv ROOMSTATE")) {
-			    	
+			 
 				} else if (line.startsWith(":tmi.twitch.tv NOTICE"))
 			    {
 			    	String[] parts = line.split(" ");
@@ -375,10 +380,15 @@ public class TwitchBot {
 			    	} else {
 			    		LOGGER.log(Level.INFO,"> -o " + p[4]);
 			    	}
-			    }else if (line.toLowerCase().contains("disconnected"))
+			    } else if (line.toLowerCase().contains("disconnected"))
 			    {
-			    	LOGGER.log(Level.INFO,line);
-			    	this.connect();
+				    LOGGER.log(Level.INFO, line);
+				    this.connect();
+			    } else if (line.toLowerCase().endsWith("now hosting you."))
+			    {
+			        String channel = line.toLowerCase().split("[# ]")[1];
+			        String hoster = line.toLowerCase().split("(>> | is now)")[1];
+			        onHost(User.getUser(hoster), Channel.getChannel(channel, this));
 			    } else
 			    {
 			        LOGGER.log(Level.INFO,"> " + line);
