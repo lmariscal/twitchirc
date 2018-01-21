@@ -339,7 +339,10 @@ public class TwitchBot {
 			        LOGGER.log(Level.INFO,"> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
 			        if (msg_msg.startsWith(commandTrigger))
 			        	onCommand(msg_user, msg_channel, msg_msg.substring(1));
-			        
+			        if (msg_user.toString().equals("jtv") && msg_msg.contains("now hosting")) {
+			        	String hoster = msg_msg.split(" ")[0];
+			        	onHost(User.getUser(hoster), msg_channel);
+			        }
 			        onMessage(msg_user, msg_channel, msg_msg);
 			    } else if (line.contains(" JOIN ")) {
 			    	String[] p = line.split(" ");
@@ -384,11 +387,6 @@ public class TwitchBot {
 			    {
 				    LOGGER.log(Level.INFO, line);
 				    this.connect();
-			    } else if (line.toLowerCase().endsWith("now hosting you."))
-			    {
-			        String channel = line.toLowerCase().split("[# ]")[1];
-			        String hoster = line.toLowerCase().split("(>> | is now)")[1];
-			        onHost(User.getUser(hoster), Channel.getChannel(channel, this));
 			    } else
 			    {
 			        LOGGER.log(Level.INFO,"> " + line);
