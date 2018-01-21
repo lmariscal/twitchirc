@@ -35,9 +35,7 @@ public class User
 	
 	/**
 	 * Change the User into a String
-	 * @deprecated No need on using it, if you put the User on a string it will change automatically
 	 */
-	@Deprecated
 	public String toString()
 	{
 		return user;
