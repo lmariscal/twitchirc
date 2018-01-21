@@ -25,6 +25,7 @@ public class ChannelQueries {
 			URLConnection conn = request.openConnection();
 			conn.setRequestProperty("Authorization", "OAuth " + oAuthToken);
 			conn.setRequestProperty("Client-ID", clientId);
+			conn.setRequestProperty("Accept", "application/vnd.twitchtv.v5+json");
 			
 			Reader response = new InputStreamReader(conn.getInputStream());
 			JsonObject responseObj = JsonObject.readFrom(response);
