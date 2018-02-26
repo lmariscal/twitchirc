@@ -160,7 +160,7 @@ public class TwitchBot {
 	 * This method is called when a command is sent on the Twitch Chat.
 	 * @param user The user is sent, if you put it on a String it will give you the user's nick
 	 * @param channel The channel where the command was sent
-	 * @param message The command
+	 * @param command The command
 	 */
 	protected void onCommand(User user, Channel channel, String command)
 	{
