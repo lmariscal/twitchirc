@@ -263,10 +263,6 @@ public class Channel {
 	}
 	
 	/**
-	 * Experimental Idk if it works I cant test it, please test it and send feedback
-	 * <p>
-	 * Still experimental after patch!
-	 *
 	 * @param user        The user to check
 	 * @param oauth_token The token to access the information.
 	 *                    This method requires the token to be generated with requested scope "channel_check_subscription"

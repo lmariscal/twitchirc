@@ -100,7 +100,6 @@ public class User
 	}
 
 	/**
-	 * Experimental Idk if it works I cant test it, please test it and send feedback
 	 * @param channel The user to check
 	 * @param oauth_token The token to acces the information
 	 * @return If the user is a sub
