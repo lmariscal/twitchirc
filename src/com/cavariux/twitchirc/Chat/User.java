@@ -35,9 +35,7 @@ public class User
 	
 	/**
 	 * Change the User into a String
-	 * @deprecated No need on using it, if you put the User on a string it will change automatically
 	 */
-	@Deprecated
 	public String toString()
 	{
 		return user;
@@ -102,7 +100,6 @@ public class User
 	}
 
 	/**
-	 * Experimental Idk if it works I cant test it, please test it and send feedback
 	 * @param channel The user to check
 	 * @param oauth_token The token to acces the information
 	 * @return If the user is a sub

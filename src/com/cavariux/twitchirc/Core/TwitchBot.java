@@ -94,7 +94,7 @@ public class TwitchBot {
 		                break;
 		            }else {
 		                LOGGER.log(Level.INFO,line);
-		            }	
+		            }
 			}
 		} catch (IOException e)
 		{
@@ -114,7 +114,7 @@ public class TwitchBot {
 	public final void setUsername(String username) {
 		this.user = username;
 	}
-	 
+	
 	/**
 	 * Sets the required ClientID for the use of the api.
 	 * @param clientID
@@ -165,6 +165,11 @@ public class TwitchBot {
 	protected void onCommand(User user, Channel channel, String command)
 	{
 		
+	}
+	
+	protected void onHost(User hoster, Channel hosted)
+	{
+	
 	}
 	
 //	/**
@@ -334,17 +339,20 @@ public class TwitchBot {
 			        LOGGER.log(Level.INFO,"> " + msg_channel + " | " + msg_user + " >> " +  msg_msg);
 			        if (msg_msg.startsWith(commandTrigger))
 			        	onCommand(msg_user, msg_channel, msg_msg.substring(1));
-			        
+			        if (msg_user.toString().equals("jtv") && msg_msg.contains("now hosting")) {
+			        	String hoster = msg_msg.split(" ")[0];
+			        	onHost(User.getUser(hoster), msg_channel);
+			        }
 			        onMessage(msg_user, msg_channel, msg_msg);
 			    } else if (line.contains(" JOIN ")) {
 			    	String[] p = line.split(" ");
 			    	String[] pd = line.split("!");
-			    	if (p[1].equals("JOIN")) 
+			    	if (p[1].equals("JOIN"))
 			    		userJoins(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
 				} else if (line.contains(" PART ")) {
 			    	String[] p = line.split(" ");
 			    	String[] pd = line.split("!");
-			    	if (p[1].equals("PART")) 
+			    	if (p[1].equals("PART"))
 			    		userParts(User.getUser(pd[0].substring(1)), Channel.getChannel(p[2], this));
 				} else if (line.contains(" WHISPER ")) {
 					String[] parts = line.split(":");
@@ -352,7 +360,7 @@ public class TwitchBot {
 					String message = parts[2];
 					onWhisper(wsp_user, message);
 				} else if (line.startsWith(":tmi.twitch.tv ROOMSTATE")) {
-			    	
+			 
 				} else if (line.startsWith(":tmi.twitch.tv NOTICE"))
 			    {
 			    	String[] parts = line.split(" ");
@@ -375,10 +383,10 @@ public class TwitchBot {
 			    	} else {
 			    		LOGGER.log(Level.INFO,"> -o " + p[4]);
 			    	}
-			    }else if (line.toLowerCase().contains("disconnected"))
+			    } else if (line.toLowerCase().contains("disconnected"))
 			    {
-			    	LOGGER.log(Level.INFO,line);
-			    	this.connect();
+				    LOGGER.log(Level.INFO, line);
+				    this.connect();
 			    } else
 			    {
 			        LOGGER.log(Level.INFO,"> " + line);
