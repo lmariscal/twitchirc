@@ -16,7 +16,7 @@ public class UserQueries {
 	
 	private static final String V5_API_BASE = "https://api.twitch.tv/kraken/users";
 	
-	public static int[] getUserId(String clientId, String... usernames) {
+	public static long[] getUserId(String clientId, String... usernames) {
 		String names = Arrays.toString(usernames).replace(" ", "");
 		
 		String requestUri = V5_API_BASE + "?login=" + names.substring(1, names.length()-1);
@@ -30,7 +30,7 @@ public class UserQueries {
 			JsonObject obj = JsonObject.readFrom(response);
 			JsonArray users = obj.get("users").asArray();
 			
-			int[] result = new int[users.size()];
+			long[] result = new long[users.size()];
 			int index = 0;
 			
 			for (JsonValue user : users) {
@@ -43,7 +43,7 @@ public class UserQueries {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-		return new int[]{0, 0};
+		return new long[]{0, 0};
 	}
 	
 }

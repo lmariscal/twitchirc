@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import com.cavariux.twitchirc.Chat.Channel;
 import com.cavariux.twitchirc.Chat.User;
+import com.cavariux.twitchirc.Utils.Poller;
 
 /**
  * The main object to start making your bot
@@ -35,7 +36,11 @@ public class TwitchBot {
 	private boolean stopped = true;
 	private String commandTrigger = "!";
 	private String clientID = "";
-
+	private Poller poller = Poller.INSTANCE;
+	{
+		poller.setBot(this);
+	}
+	
 	private static final Logger LOGGER = Logger.getLogger(TwitchBot.class.getName());
 	
 	public final List<Channel> getChannels(){
@@ -466,6 +471,10 @@ public class TwitchBot {
 	{
 	}
 	
+	public void onLive(User user) {
+	
+	}
+	
 	/**
 	 * Sets the whispers ip (000.000.000.000:0000)
 	 * @param ip The whole ip
@@ -507,6 +516,10 @@ public class TwitchBot {
 	public final String getVersion()
 	{
 		return "TwitchIRC "+version;
+	}
+	
+	public Poller getPoller() {
+		return this.poller;
 	}
 	
 }

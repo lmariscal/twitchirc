@@ -23,7 +23,6 @@ public class ChannelQueries {
 		try {
 			URL request = new URL(requestUri);
 			URLConnection conn = request.openConnection();
-			//conn.setRequestMethod(
 			conn.setRequestProperty("Authorization", "OAuth " + oAuthToken);
 			conn.setRequestProperty("Client-ID", clientId);
 			conn.setRequestProperty("Accept", "application/vnd.twitchtv.v5+json");
