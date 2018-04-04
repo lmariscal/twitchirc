@@ -522,4 +522,8 @@ public class TwitchBot {
 		return this.poller;
 	}
 	
+	public void onFollow(User username, List<User> newFollowers)
+	{
+	
+	}
 }

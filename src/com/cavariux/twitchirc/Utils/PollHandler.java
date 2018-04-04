@@ -10,13 +10,14 @@ import java.util.stream.Collectors;
 
 class PollHandler {
 	
+	private static Map<String, String> latestFollowerForUser = new HashMap<>();
+	
 	static void handlePolls(Set<Poller.Poll> polls, TwitchBot bot) {
 		Map<Poller.PollType, List<Poller.Poll>> dividedPolls = dividePolls(polls);
 		
 		for (Poller.PollType type : Poller.PollType.values()) {
 			type.handlingMethod.accept(dividedPolls.get(type), bot);
 		}
-		
 	}
 	
 	private static Map<Poller.PollType, List<Poller.Poll>> dividePolls(Set<Poller.Poll> polls) {
@@ -50,9 +51,21 @@ class PollHandler {
 	
 	static void handleFollow(List<Poller.Poll> polls, TwitchBot report) {
 		String[] usernames = polls.stream().map(p -> p.username).toArray(String[]::new);
-		long[] ids = UserQueries.getUserId(report.getClientID(), usernames);
-		List<String> newFollower = UserQueries.getNewFollowers(ids); //TODO add that method in the UserQueries
+		Map<String, List<String>> newFollower = UserQueries.getFollowers(usernames, report.getClientID());
+		
+		newFollower.forEach((username, newFollowers) -> {
+			String previousLatest = latestFollowerForUser.get(username);
+			Integer index = newFollowers.indexOf(previousLatest);
+			newFollowers.subList(index, newFollowers.size()).clear(); //discard all followers we already know
+			if (index > 0)
+				latestFollowerForUser.put(username, newFollowers.get(0));
+			
+			List<User> userList = newFollowers.stream().map(uName -> User.getUser(uName)).collect(Collectors.toList());
+			report.onFollow(User.getUser(username), userList);
+		});
 	}
+	
+	//TODO prepareFollow
 	
 	private static Poller.Poll getPollForName(String name, List<Poller.Poll> polls) {
 		for (Poller.Poll p : polls) {

@@ -14,6 +14,9 @@ public enum Poller {
 	
 	private static final int minutesAsMilliSeconds = 60 * 1000;
 	
+	//Without bearer token the API is rate limited to 30 requests per minute
+	//TODO adapt the pollRate when another type is added so that there is a maximum of 30 requests per minute
+	private static final int lowerPollingLimit = 2000;
 	
 	private long pollRate = minutesAsMilliSeconds;
 	private Set<Poll> polls = new HashSet<>();
@@ -27,13 +30,14 @@ public enum Poller {
 		this.bot = bot;
 	}
 	
+	//TODO Make it optional to set it individually for each enum value of PollType
 	public void setPollRate(long milliseconds) {
 		this.pollRate = milliseconds;
 		restartExecutor();
 	}
 	
 	public void setPollRate(long amount, TimeUnit unit) {
-		this.pollRate = unit.convert(amount, TimeUnit.MILLISECONDS);
+		this.pollRate = TimeUnit.MILLISECONDS.convert(amount, unit);
 		restartExecutor();
 	}
 	
